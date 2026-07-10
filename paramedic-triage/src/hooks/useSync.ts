@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import { SyncService } from "../services/syncServices";
 
+
 export default function useSync(onSyncComplete?: () => void) {
       useEffect(() => {
     const sync = new SyncService();
