@@ -36,6 +36,9 @@ The application enables paramedics to capture critical patient triage informatio
 | 5 | Stable | 🔵 Blue |
 
 ---
+## Project Architecture
+<img width="407" height="571" alt="image" src="https://github.com/user-attachments/assets/b99d312f-62e1-4a77-a562-869ae243f185" />
+
 
 ## Offline-First Architecture
 
