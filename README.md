@@ -7,7 +7,7 @@ A high-performance, offline-first mobile application built with **React Native (
 The application enables paramedics to capture critical patient triage information even in areas with poor or no internet connectivity. Every submission is stored locally and automatically synchronized with the server when network connectivity is restored.
 
 
-## 📱 Features
+##  Features
 
 ### Triage Intake Form
 
