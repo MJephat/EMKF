@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
 import { useForm } from "react-hook-form";
 
@@ -6,6 +6,10 @@ import InputField from "../components/InputField";
 import PrioritySelector from "../components/PriorityCard";
 import StatusSelector from "../components/StatusPicker";
 import SubmitButton from "../components/submitButton";
+import { TriageRepository } from "../database/triageRepository";
+// import { v4 as uuid } from "uuid";
+import uuid from "react-native-uuid";
+import { Triage } from "../models/triage";
 
 
 type FormData = {
@@ -23,9 +27,44 @@ export default function TriageScreen() {
     setValue,
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    Alert.alert("Success", JSON.stringify(data, null, 2));
-  };
+  const repository = new TriageRepository();
+  const [records, setRecords] = useState<Triage[]>([]);
+
+
+//   const onSubmit = (data: FormData) => {
+//     Alert.alert("Success", JSON.stringify(data, null, 2));
+//   };
+
+const onSubmit = (data: FormData) => {
+
+    repository.save({
+
+        id: uuid.v4().toString(),
+        patientName: data.patientName,
+        description: data.description,
+        priority: data.priority,
+        status: data.status,
+        synced: false,
+        createdAt: new Date().toISOString()
+
+    });
+
+    loadRecords();
+
+    Alert.alert("Saved locally");
+};
+
+//load existing Records
+useEffect(() => {
+    loadRecords();
+}, []);
+
+const loadRecords = () => {
+    const data = repository.getAll();
+      console.log("Records from SQLite:", data);
+
+    setRecords(data);
+};
 
   return (
     <View style={styles.container}>
@@ -67,6 +106,46 @@ export default function TriageScreen() {
       />
 
       <SubmitButton onPress={handleSubmit(onSubmit)} />
+      <Text
+        style={{
+            fontSize:20,
+            fontWeight:"bold",
+            marginTop:30
+        }}
+    >
+        Saved Records
+    </Text>
+
+                {records.map(record => (
+
+            <View
+                key={record.id}
+                style={styles.card}
+            >
+
+            <Text style={styles.name}>
+                {record.patientName}
+            </Text>
+
+            <Text>
+                {record.description}
+            </Text>
+
+            <Text>
+                Priority {record.priority}
+            </Text>
+
+            <Text>
+
+            {record.synced
+                ? "✅ Synced"
+                : "🟠 Pending Sync"}
+
+            </Text>
+
+            </View>
+
+            ))}
     </View>
   );
 }
@@ -92,4 +171,23 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
+  card: {
+
+    marginTop:15,
+
+    padding:15,
+
+    borderRadius:10,
+
+    backgroundColor:"#F5F5F5",
+
+},
+
+name:{
+
+    fontWeight:"bold",
+
+    fontSize:17,
+
+},
 });
