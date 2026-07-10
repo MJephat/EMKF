@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Text, StyleSheet, Alert, ScrollView, FlatList } from "react-native";
 import { useForm } from "react-hook-form";
 
 import InputField from "../components/InputField";
@@ -10,6 +10,7 @@ import { TriageRepository } from "../database/triageRepository";
 // import { v4 as uuid } from "uuid";
 import uuid from "react-native-uuid";
 import { Triage } from "../models/triage";
+import TriageCard from "../components/TriageCard";
 
 
 type FormData = {
@@ -27,7 +28,8 @@ export default function TriageScreen() {
     setValue,
   } = useForm<FormData>();
 
-  const repository = new TriageRepository();
+//   const repository = new TriageRepository();
+  const repository = useMemo(() => new TriageRepository(), []);
   const [records, setRecords] = useState<Triage[]>([]);
 
 
@@ -67,96 +69,79 @@ const loadRecords = () => {
 };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Triage Submission Intake Form</Text>
+  <FlatList
+    data={records}
+    keyExtractor={(item) => item.id}
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={styles.container}
+    ListHeaderComponent={
+      <>
+        <Text style={styles.title}>
+          Triage Submission Intake Form
+        </Text>
 
-      <InputField
-        control={control}
-        name="patientName"
-        label="Patient Name"
-        placeholder="Enter patient name"
-        rules={{
-          required: "Patient name is required",
-        }}
-      />
+        <InputField
+          control={control}
+          name="patientName"
+          label="Patient Name"
+          placeholder="Enter patient name"
+          rules={{
+            required: "Patient name is required",
+          }}
+        />
 
-      <InputField
-        control={control}
-        name="description"
-        label="Condition Description"
-        placeholder="Describe the patient's condition"
-        multiline
-        rules={{
-          required: "Condition description is required",
-        }}
-      />
+        <InputField
+          control={control}
+          name="description"
+          label="Condition Description"
+          placeholder="Describe the patient's condition"
+          multiline
+          rules={{
+            required: "Condition description is required",
+          }}
+        />
 
-      <Text style={styles.label}>Priority</Text>
+        <Text style={styles.label}>Priority</Text>
 
-      <PrioritySelector
-        value={watch("priority")}
-        onChange={(value) => setValue("priority", value)}
-      />
+        <PrioritySelector
+          value={watch("priority")}
+          onChange={(value) => setValue("priority", value)}
+        />
 
-      <Text style={styles.label}>Status</Text>
+        <Text style={styles.label}>Status</Text>
 
-      <StatusSelector
-        value={watch("status")}
-        onChange={(value) => setValue("status", value)}
-      />
+        <StatusSelector
+          value={watch("status")}
+          onChange={(value) => setValue("status", value)}
+        />
 
-      <SubmitButton onPress={handleSubmit(onSubmit)} />
-      <Text
-        style={{
-            fontSize:20,
-            fontWeight:"bold",
-            marginTop:30
-        }}
-    >
-        Saved Records
-    </Text>
+        <SubmitButton
+          onPress={handleSubmit(onSubmit)}
+        />
 
-                {records.map(record => (
-
-            <View
-                key={record.id}
-                style={styles.card}
-            >
-
-            <Text style={styles.name}>
-                {record.patientName}
-            </Text>
-
-            <Text>
-                {record.description}
-            </Text>
-
-            <Text>
-                Priority {record.priority}
-            </Text>
-
-            <Text>
-
-            {record.synced
-                ? "✅ Synced"
-                : "🟠 Pending Sync"}
-
-            </Text>
-
-            </View>
-
-            ))}
-    </View>
-  );
+        <Text style={styles.heading}>
+          Saved Records
+        </Text>
+      </>
+    }
+    renderItem={({ item }) => (
+      <TriageCard record={item} />
+    )}
+    ListEmptyComponent={
+      <Text style={styles.emptyText}>
+        No records saved yet.
+      </Text>
+    }
+  />
+);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    paddingTop: 60,
-    
-  },
+container: {
+  padding: 20,
+  paddingTop: 60,
+  paddingBottom: 40,
+},
 
   title: {
     fontSize: 18,
@@ -171,23 +156,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
-  card: {
-
-    marginTop:15,
-
-    padding:15,
-
-    borderRadius:10,
-
-    backgroundColor:"#F5F5F5",
-
+  heading: {
+  fontSize: 16,
+  fontWeight: "bold",
+  marginTop: 30,
+  marginBottom: 15,
+},
+ emptyText: {
+  textAlign: "center",
+  color: "gray",
+  marginTop: 20,
 },
 
-name:{
 
-    fontWeight:"bold",
 
-    fontSize:17,
-
-},
 });
