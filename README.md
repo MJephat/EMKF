@@ -68,39 +68,6 @@ This guarantees that **no patient information is lost**.
 
 ---
 
-## Project Structure
-
-src
-│
-├── components
-│   ├── InputField.tsx
-│   ├── PriorityCard.tsx
-│   ├── StatusPicker.tsx
-│   ├── SubmitButton.tsx
-│   └── TriageCard.tsx
-│
-├── database
-│   ├── database.ts
-│   └── triageRepository.ts
-│
-├── hooks
-│   └── useSync.ts
-│
-├── models
-│   └── triage.ts
-│
-├── services
-│   ├── api.ts
-│   └── syncService.ts
-│
-├── screens
-│   └── TriageScreen.tsx
-│
-├── store
-│
-└── tests
-
-
 ## Application Architecture
 
                User
