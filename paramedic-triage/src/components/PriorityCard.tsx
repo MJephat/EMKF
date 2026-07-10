@@ -27,8 +27,10 @@ export default function PrioritySelector({
             { backgroundColor: colors[priority as keyof typeof colors] },
             value === priority && styles.selected,
           ]}
+          
           onPress={() => onChange(priority)}
         >
+            
           <Text style={styles.text}>{priority}</Text>
         </TouchableOpacity>
       ))}

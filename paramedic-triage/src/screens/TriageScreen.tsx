@@ -33,8 +33,19 @@ export default function TriageScreen() {
   const repository = useMemo(() => new TriageRepository(), []);
   const [records, setRecords] = useState<Triage[]>([]);
 
-useSync(); // Custom hook to handle syncing when online
+  //load existing Records
+useEffect(() => {
+    loadRecords();
+}, []);
 
+const loadRecords = () => {
+    const data = repository.getAll();
+      console.log("Records from SQLite:", data);
+
+    setRecords(data);
+};
+
+    useSync(loadRecords); // Custom hook to handle syncing when online
 
 //   const onSubmit = (data: FormData) => {
 //     Alert.alert("Success", JSON.stringify(data, null, 2));
@@ -80,17 +91,7 @@ const onSubmit = (data: FormData) => {
     Alert.alert("Saved locally");
 };
 
-//load existing Records
-useEffect(() => {
-    loadRecords();
-}, []);
 
-const loadRecords = () => {
-    const data = repository.getAll();
-      console.log("Records from SQLite:", data);
-
-    setRecords(data);
-};
 
   return (
   <FlatList
@@ -130,6 +131,7 @@ const loadRecords = () => {
         <PrioritySelector
           value={watch("priority")}
           onChange={(value) => setValue("priority", value)}
+          
         />
 
         <Text style={styles.label}>Status</Text>

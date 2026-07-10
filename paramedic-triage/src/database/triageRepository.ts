@@ -51,6 +51,7 @@ save(record: Triage) {
       "UPDATE triage SET synced = 1 WHERE id = ?",
       [id]
     );
+    console.log(`Record with id ${id} marked as synced.`);
   }
 
   delete(id: string) {

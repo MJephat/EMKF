@@ -7,29 +7,34 @@ export class SyncService {
 
   private isSyncing = false;
 
-  async syncPending() {
-    if (this.isSyncing) return;
+  async syncPending(onComplete?: () => void) {
+  if (this.isSyncing) return;
 
-    this.isSyncing = true;
+  this.isSyncing = true;
 
-    try {
-      const pending = this.repository.getPending();
+  try {
+    const pending = this.repository.getPending();
 
-      console.log(`Found ${pending.length} pending record(s)`);
+    console.log(`Found ${pending.length} pending record(s)`);
 
-      for (const record of pending) {
-        try {
-          await this.api.upload(record);
+    for (const record of pending) {
+      try {
+        await this.api.upload(record);
 
-          this.repository.markAsSynced(record.id);
+        this.repository.markAsSynced(record.id);
 
-          console.log(`${record.patientName} synced`);
-        } catch (error) {
-          console.log(`${record.patientName} failed to sync`);
-        }
+        console.log(`${record.patientName} synced`);
+      } catch {
+        console.log(`${record.patientName} failed to sync`);
       }
-    } finally {
-      this.isSyncing = false;
     }
+
+    // Notify UI that sync has finished
+    onComplete?.();
+
+  } finally {
+    this.isSyncing = false;
+  }
+
   }
 }
