@@ -11,6 +11,7 @@ import { TriageRepository } from "../database/triageRepository";
 import uuid from "react-native-uuid";
 import { Triage } from "../models/triage";
 import TriageCard from "../components/TriageCard";
+import useSync from "../hooks/useSync";
 
 
 type FormData = {
@@ -32,10 +33,33 @@ export default function TriageScreen() {
   const repository = useMemo(() => new TriageRepository(), []);
   const [records, setRecords] = useState<Triage[]>([]);
 
+useSync(); // Custom hook to handle syncing when online
+
 
 //   const onSubmit = (data: FormData) => {
 //     Alert.alert("Success", JSON.stringify(data, null, 2));
 //   };
+
+const deleteRecord = (id: string) => {
+  Alert.alert(
+    "Delete Record",
+    "Are you sure you want to delete this triage record?",
+    [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          repository.delete(id);
+          loadRecords();
+        },
+      },
+    ]
+  );
+};
 
 const onSubmit = (data: FormData) => {
 
@@ -125,7 +149,7 @@ const loadRecords = () => {
       </>
     }
     renderItem={({ item }) => (
-      <TriageCard record={item} />
+      <TriageCard record={item} onDelete={deleteRecord}/>
     )}
     ListEmptyComponent={
       <Text style={styles.emptyText}>

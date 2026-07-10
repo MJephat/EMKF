@@ -1,12 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 import { Triage } from "../models/triage";
 
 interface Props {
   record: Triage;
+    onDelete: (id: string) => void;
+
 }
 
-export default function TriageCard({ record }: Props) {
+export default function TriageCard({ record, onDelete }: Props) {
   const priorityColor = {
     1: "#8B0000",
     2: "#FF6B00",
@@ -14,6 +16,8 @@ export default function TriageCard({ record }: Props) {
     4: "#2E7D32",
     5: "#1565C0",
   };
+
+
 
   return (
     <View style={styles.card}>
@@ -47,7 +51,18 @@ export default function TriageCard({ record }: Props) {
         >
           {record.synced ? "✓ Synced" : "Pending Sync"}
         </Text>
+
+          <TouchableOpacity
+  style={styles.deleteButton}
+  onPress={() => onDelete(record.id)}
+>
+  <Text style={styles.deleteText}>
+    Delete
+  </Text>
+</TouchableOpacity>
+        
       </View>
+      
     </View>
   );
 }
@@ -76,4 +91,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
   },
+
+  deleteButton: {
+  marginTop: 12,
+  backgroundColor: "#DC3545",
+  paddingVertical: 10,
+  borderRadius: 8,
+  alignItems: "center",
+},
+
+deleteText: {
+  color: "white",
+  fontWeight: "bold",
+},
 });

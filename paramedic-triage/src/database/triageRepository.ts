@@ -52,4 +52,11 @@ save(record: Triage) {
       [id]
     );
   }
+
+  delete(id: string) {
+  db.runSync(
+    "DELETE FROM triage WHERE id = ?",
+    [id]
+  );
+}
 }
