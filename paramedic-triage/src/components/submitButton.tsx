@@ -10,7 +10,7 @@ export default function SubmitButton({ onPress }: Props) {
       style={styles.button}
       onPress={onPress}
     >
-      <Text style={styles.text}>SUBMIT TRIAGE</Text>
+      <Text style={styles.text}>SUBMIT </Text>
     </TouchableOpacity>
   );
 }
