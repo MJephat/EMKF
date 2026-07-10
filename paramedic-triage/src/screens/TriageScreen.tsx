@@ -23,11 +23,19 @@ type FormData = {
 
 export default function TriageScreen() {
   const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<FormData>();
+  control,
+  handleSubmit,
+  watch,
+  setValue,
+  reset,
+} = useForm<FormData>({
+  defaultValues: {
+    patientName: "",
+    description: "",
+    priority: undefined,
+    status: undefined,
+  },
+});
 
 //   const repository = new TriageRepository();
   const repository = useMemo(() => new TriageRepository(), []);
@@ -86,7 +94,9 @@ const onSubmit = (data: FormData) => {
 
     });
 
+
     loadRecords();
+    reset(); // Reset the form fields after submission
 
     Alert.alert("Saved locally");
 };
